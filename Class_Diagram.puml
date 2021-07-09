@@ -1,0 +1,188 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+interface Payment{
++ getValue(): int
++ getName(): String
+}
+
+interface PayStrategy {
++ pay(Item item): List<Payment>
+}
+
+class CoinPayment{
+- displayInsertCoin(Item selectedItem, long currentBalance): void
++ pay(Item selectedItem): List<Payment>
+}
+
+class CashPayment{
+- displayInsertCashMessage(Item selectedItem, long currentBalance): void
++ pay(Item selectedItem): List<Payment>
+}
+class CreditCardPayment {
++ pay(Item selectedItem): List<Payment>
+}
+CoinPayment ..|> PayStrategy
+CashPayment ..|> PayStrategy
+CreditCardPayment ..|> PayStrategy
+
+enum Cash {
+ONE_USD: Cash
+TWO_USD: Cash
+FIVE_USD: Cash
+
+- value: int
++ Cash(int value):
++ getValue(): int
+}
+
+Cash ..|> Payment
+Coin ..|> Payment
+
+enum Coin {
+ONE_CENT: Coin
+FIVE_CENTS: Coin
+TEN_CENTS: Coin
+TWENTY_FIVE_CENTS: Coin
+TEN_USD: Coin
+
+- value: int
++ Coin(int)
++ getValue(): int
+}
+
+enum Item {
+ICE_CREAM: Item
+COKE: Item
+PEPSI: Item
+WATER: Item
+SANDWICH: Item
+
+- selectionNumber: int
+- price: int
++ Item(int, int)
++ getSelectionNumber(): int
++ getPrice(): int
+}
+
+interface VendingMachine {
++ greetingAndDisplayItems(): void
++ selectItem(Item item): void
++ insertCoin(Coin coin): void
++ start(): void
++ process(VendingMachineRequest request): void
++ displayChangeMessage(List<Coin> changes): void
++ displaySelectedItemMessage(): void
++ refund(): List<Coin>
++ reset(): void
+}
+
+class VendingMachineFactory{
++ VendingMachineFactory()
++ getVendingMachine(String type): VendingMachine
+}
+
+ConsoleVendingMachineImpl "1" --> "*" Item
+
+ConsoleVendingMachineImpl ...|> VendingMachine
+ConsoleVendingMachineImpl --> VendingMachineRequest
+ConsoleVendingMachineImpl  o-- "0..*" Inventory
+VendingMachine --> VendingMachineRequest
+ConsoleVendingMachineImpl --> ChangeHandlerImpl
+ConsoleVendingMachineImpl --> Payment
+
+class ConsoleVendingMachineImpl {
+- coinInventory: Inventory<Coin>
+- itemInventory: Inventory<Item>
+- changeHandler: ChangeHandler
+- selectedItem: Item
+- totalSales: long
+- currentBalance: long
+
+- collectItem(): Item
+- calculateChanges(VendingMachineRequest request): List<Coin>
+- updateCoinInventory(List<Coin> changes): void
+- hasSufficientChange(): boolean
+- hasSufficientChangeForAmount(long amount): boolean
+- isFullPaid(): boolean
+- displayInsertCoin(): void
++ greetingAndDisplayItems(): void
++ selectItem(Item item): void
++ insertCoin(Coin coin): void
++ start(): void
++ process(VendingMachineRequest request): void
++ displayChangeMessage(List<Coin> changes): void
++ displaySelectedItemMessage(): void
++ refund(): List<Coin>
++ reset(): void
+}
+
+class Inventory<T> {
+- inventory: Map<T, Integer>
++ getQuantity(T item): int
++ add(T item): void
++ deduct(T item): void
++ hasItem(T item): boolean
++ clear(): void
++ void put(T item, int quantity): void
+}
+
+class VendingMachineRequest {
+- item: Item
+- currentBalance: long
+
++ VendingMachineRequest(Item item, long currentBalance)
++ getItem():Item
++ getCurrentBalance(): long
++ setItem(Item item): void
++ setCurrentBalance(long amount): void
+}
+
+interface ChangeHandler {
+    calculateChanges(VendingMachineRequest request, Inventory<Coin> coinInventory): List<Coin>
+    calculateChanges(long amount, Inventory<Coin> coinInventory): List<Coin>
+}
+ChangeHandlerImpl ..|> ChangeHandler
+ChangeCalculatorImpl ..|> ChangeCalculator
+ChangeHandlerImpl --> ChangeCalculatorImpl
+
+
+class ChangeHandlerImpl {
+- changeCalculator: ChangeCalculator
+
++ calculateChanges(VendingMachineRequest request, Inventory<Coin> coinInventory): List<Coin>
++ calculateChanges(long amount, Inventory<Coin> coinInventory): List<Coin>
+}
+
+interface ChangeCalculator {
+calculateChange(Inventory<Coin> coinInventory, long amount): List<Coin>
+}
+class ChangeCalculatorImpl {
++ calculateChange(Inventory<Coin> coinInventory, long amount): List<Coin>
+}
+
+
+class InvalidVendingMachineTypeException{
+- message: (String type)
++ InvalidVendingMachineTypeException(String message):
+}
+
+class NotEnoughAmountException{
+- message: (String type)
++ NotEnoughAmountException(String message):
+}
+
+class NotSufficientChangeException{
+- message: (String type)
++ NotSufficientChangeException(String message):
+}
+
+class OutOfOrderException{
+- message: (String type)
++ OutOfOrderException(String message):
+}
+class UnsupportedPaymentMethod{
+- message: (String type)
++ UnsupportedPaymentMethod(String message):
+}
+@enduml
