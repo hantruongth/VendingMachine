@@ -20,7 +20,6 @@ import java.util.Scanner;
 public class ConsoleVendingMachineImpl implements VendingMachine {
 
     private Inventory<Payment> coinCashInventory = new Inventory<>();
-    //private Inventory<Cash> cashInventory = new Inventory<>();
     private Inventory<Item> itemInventory = new Inventory<>();
     private ChangeHandler changeHandler = new ChangeHandlerImpl();
     private Scanner scanner = new Scanner(System.in);

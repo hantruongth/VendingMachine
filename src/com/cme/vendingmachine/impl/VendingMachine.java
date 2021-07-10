@@ -14,8 +14,6 @@ public interface VendingMachine {
 
     void selectItem(Item item);
 
-    //void insertCoin(Coin coin);
-
     void start();
 
     void process(VendingMachineRequest request);

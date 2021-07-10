@@ -26,6 +26,22 @@ CoinPayment ..|> PayStrategy
 CashPayment ..|> PayStrategy
 CreditCardPayment ..|> PayStrategy
 
+enum PaymentMethod {
+COIN: PaymentMethod
+CASH: PaymentMethod
+CREDIT_CARD: PaymentMethod
+
+- value: int
++ PaymentMethod(int value):
++ getValue(): int
++ getMethod(int paymentMethod): PaymentMethod
++ getPayment(int selectedMethod): PayStrategy
+}
+PaymentMethod --> CoinPayment
+PaymentMethod --> CashPayment
+PaymentMethod --> CreditCardPayment
+
+
 enum Cash {
 ONE_USD: Cash
 TWO_USD: Cash
@@ -68,7 +84,6 @@ SANDWICH: Item
 interface VendingMachine {
 + greetingAndDisplayItems(): void
 + selectItem(Item item): void
-+ insertCoin(Coin coin): void
 + start(): void
 + process(VendingMachineRequest request): void
 + displayChangeMessage(List<Coin> changes): void
@@ -87,9 +102,10 @@ ConsoleVendingMachineImpl "1" --> "*" Item
 ConsoleVendingMachineImpl ...|> VendingMachine
 ConsoleVendingMachineImpl --> VendingMachineRequest
 ConsoleVendingMachineImpl  o-- "0..*" Inventory
-VendingMachine --> VendingMachineRequest
+
 ConsoleVendingMachineImpl --> ChangeHandlerImpl
-ConsoleVendingMachineImpl --> Payment
+ConsoleVendingMachineImpl -> Payment
+ConsoleVendingMachineImpl --> PayStrategy
 
 class ConsoleVendingMachineImpl {
 - coinInventory: Inventory<Coin>
@@ -108,7 +124,6 @@ class ConsoleVendingMachineImpl {
 - displayInsertCoin(): void
 + greetingAndDisplayItems(): void
 + selectItem(Item item): void
-+ insertCoin(Coin coin): void
 + start(): void
 + process(VendingMachineRequest request): void
 + displayChangeMessage(List<Coin> changes): void
