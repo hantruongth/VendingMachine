@@ -164,7 +164,7 @@ ChangeHandlerImpl --> ChangeCalculatorImpl
 
 class ChangeHandlerImpl {
 - changeCalculator: ChangeCalculator
-
+- hasInventoryAvailable(List<Payment> changes, Inventory<Payment> coinCashInventory): boolean
 + calculateChanges(VendingMachineRequest request, Inventory<Coin> coinInventory): List<Coin>
 + calculateChanges(long amount, Inventory<Coin> coinInventory): List<Coin>
 }
