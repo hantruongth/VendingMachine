@@ -88,6 +88,7 @@ interface VendingMachine {
 + process(VendingMachineRequest request): void
 + displayChangeMessage(List<Coin> changes): void
 + displaySelectedItemMessage(): void
++ updateInventory(List<Payment> payments): void
 + refund(): List<Coin>
 + reset(): void
 }
@@ -117,7 +118,7 @@ class ConsoleVendingMachineImpl {
 
 - collectItem(): Item
 - calculateChanges(VendingMachineRequest request): List<Coin>
-- updateCoinInventory(List<Coin> changes): void
+- updateCoinCashInventory(List<Coin> changes): void
 - hasSufficientChange(): boolean
 - hasSufficientChangeForAmount(long amount): boolean
 - isFullPaid(): boolean

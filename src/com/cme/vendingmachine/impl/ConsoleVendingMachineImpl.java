@@ -83,7 +83,7 @@ public class ConsoleVendingMachineImpl implements VendingMachine {
                 PayStrategy payStrategy = PaymentMethod.getPayment(paymentMethod);
                 List<Payment> payments = payStrategy.pay(selectedItem);
 
-                updateInventory(payments, PaymentMethod.COIN);
+                updateInventory(payments);
 
                 process(new VendingMachineRequest(selectedItem, currentBalance));
 
@@ -103,7 +103,7 @@ public class ConsoleVendingMachineImpl implements VendingMachine {
             System.out.println(i.getSelectionNumber() + " - " + i.name() + " - Price: " + i.getPrice() + " cents");
         });
         System.out.println("0 - EXIT");
-        System.out.println("");
+        System.out.println("                  ");
         System.out.print(" Please select your item number: ");
     }
 
@@ -135,13 +135,13 @@ public class ConsoleVendingMachineImpl implements VendingMachine {
 
     private List<Payment> calculateChanges(VendingMachineRequest request) {
         List<Payment> changes = changeHandler.calculateChanges(request, coinCashInventory);
-        updateCoinInventory(changes);
+        updateCoinCashInventory(changes);
         currentBalance = 0;
         selectedItem = null;
         return changes;
     }
 
-    private void updateCoinInventory(List<Payment> changes) {
+    private void updateCoinCashInventory(List<Payment> changes) {
         changes.stream().forEach(coin -> coinCashInventory.deduct(coin));
     }
 
@@ -164,7 +164,8 @@ public class ConsoleVendingMachineImpl implements VendingMachine {
         return currentBalance >= selectedItem.getPrice();
     }
 
-    public void updateInventory(List<Payment> payments, PaymentMethod method) {
+    @Override
+    public void updateInventory(List<Payment> payments) {
         payments.stream().forEach(p -> {
             coinCashInventory.add(p);
             currentBalance += p.getValue();
@@ -199,7 +200,7 @@ public class ConsoleVendingMachineImpl implements VendingMachine {
     @Override
     public List<Payment> refund() {
         List<Payment> refund = changeHandler.calculateChanges(currentBalance, coinCashInventory);
-        updateCoinInventory(refund);
+        updateCoinCashInventory(refund);
         currentBalance = 0;
         selectedItem = null;
         return refund;

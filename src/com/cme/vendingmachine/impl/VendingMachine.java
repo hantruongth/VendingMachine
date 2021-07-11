@@ -26,5 +26,7 @@ public interface VendingMachine {
 
     List<Payment> refund();
 
+    void updateInventory(List<Payment> payments);
+
     void reset();
 }
